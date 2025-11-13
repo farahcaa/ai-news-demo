@@ -1,532 +1,352 @@
+import React, { useState } from "react";
 import {
-  Megaphone,
-  Target,
-  BarChart3,
-  Coins,
-  Users,
-  CheckCircle2,
-  ArrowRight,
+  Heart,
+  ThumbsDown,
+  EyeOff,
+  Sparkles,
+  SlidersHorizontal,
+  Home,
+  Bell,
+  User,
+  Dot,
+  BookOpen,
+  Layers,
+  Cpu,
+  Code2,
+  Globe2,
 } from "lucide-react";
-import HatHouseBlack from "@/components/ui/HatHouseBlack";
-import Footer from "@/components/layout/Footer";
-import { useNavigate } from "react-router";
 
-const Home: React.FC = () => {
-  const navigate = useNavigate();
+type ReactionType = "like" | "dislike" | "hide" | "more" | "less" | null;
 
+type NewsUpdate = {
+  id: number;
+  time: string;
+  source: string;
+  headline: string;
+  summary: string;
+  tag: string;
+};
+
+type FeedKey = "software" | "react" | "spring" | "java" | "security";
+
+type FeedDefinition = {
+  key: FeedKey;
+  label: string;
+  accent: string;
+  description: string;
+};
+const FEEDS: FeedDefinition[] = [
+  {
+    key: "software",
+    label: "Software News",
+    accent: "text-sky-400",
+    description: "Big-picture dev & industry",
+  },
+  {
+    key: "react",
+    label: "React",
+    accent: "text-emerald-400",
+    description: "Framework & ecosystem",
+  },
+  {
+    key: "spring",
+    label: "Spring",
+    accent: "text-amber-300",
+    description: "Backend & microservices",
+  },
+  {
+    key: "java",
+    label: "Java",
+    accent: "text-purple-300",
+    description: "Language & tooling",
+  },
+  {
+    key: "security",
+    label: "Security",
+    accent: "text-rose-400",
+    description: "Vulns & patches",
+  },
+];
+const MOCK_UPDATES: NewsUpdate[] = [
+  {
+    id: 1,
+    time: "8:05 AM",
+    source: "ABC News",
+    headline: "Overnight markets react to new Fed comments",
+    summary:
+      "Global markets opened mixed as investors weighed fresh guidance from the Federal Reserve on interest rates and inflation expectations.",
+    tag: "Markets • Morning Brief",
+  },
+  {
+    id: 2,
+    time: "11:30 AM",
+    source: "CNN",
+    headline: "New AI safety guidelines released",
+    summary:
+      "A coalition of major tech companies and researchers released a shared set of principles aimed at improving transparency and safety in AI systems.",
+    tag: "Tech • Policy",
+  },
+  {
+    id: 3,
+    time: "3:15 PM",
+    source: "Reuters",
+    headline: "Severe weather alerts in multiple states",
+    summary:
+      "Forecasters warn of heavy storms and potential flooding across several regions this evening. Travel delays are expected in affected areas.",
+    tag: "Weather • Live Update",
+  },
+];
+
+const reactionLabel: Record<Exclude<ReactionType, null>, string> = {
+  like: "You liked this",
+  dislike: "You disliked this",
+  hide: "We’ll show less like this",
+  more: "More like this",
+  less: "Less of this topic",
+};
+
+const News: React.FC = () => {
+  const [reactions, setReactions] = useState<Record<number, ReactionType>>({});
+
+  const handleReaction = (id: number, reaction: ReactionType) => {
+    setReactions((prev) => ({
+      ...prev,
+      [id]: prev[id] === reaction ? null : reaction,
+    }));
+  };
+
+  const [activeFeed, setActiveFeed] = useState<FeedKey>("software");
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-50 via-white to-white text-slate-900 flex flex-col">
-      {/* Header */}
-      <header className="flex justify-between items-center p-4 sticky top-0 bg-white/90 backdrop-blur border-b border-slate-200 z-20">
-        <div
-          className="flex items-center text-2xl font-bold cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <span className="mr-2 flex items-center">
-            <HatHouseBlack />
-          </span>
-          ads.campuscribs.org
+    <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-50">
+      {/* Top bar / header */}
+      <header className="sticky top-0 z-20 h-14 flex items-center justify-between px-4 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-sky-500 via-indigo-500 to-violet-500 flex items-center justify-center text-xs font-semibold">
+            AI
+          </div>
+          <div>
+            <div className="text-sm font-semibold flex items-center gap-1">
+              AI News Feed
+              <Dot className="w-4 h-4 text-emerald-400" />
+              <span className="text-[11px] font-normal text-emerald-400">
+                Online
+              </span>
+            </div>
+            <p className="text-[11px] text-neutral-400">
+              Smart updates throughout your day
+            </p>
+          </div>
         </div>
 
-        <nav className="hidden sm:flex items-center gap-6 text-sm text-slate-600">
-          <a href="#overview" className="hover:text-slate-900">
-            Overview
-          </a>
-          <a href="#how-it-works" className="hover:text-slate-900">
-            How it works
-          </a>
-          <a href="#campaigns" className="hover:text-slate-900">
-            Campaigns
-          </a>
-          <a href="#pricing" className="hover:text-slate-900">
-            Pricing
-          </a>
-          <a href="#faq" className="hover:text-slate-900">
-            FAQ
-          </a>
-          <a href="#contact" className="hover:text-slate-900">
-            Contact
-          </a>
-        </nav>
+        <div className="flex items-center gap-2">
+          <button className="inline-flex items-center gap-1 rounded-full border border-neutral-800 bg-neutral-900/80 px-3 py-1 text-[11px] text-neutral-300 hover:bg-neutral-800 transition">
+            <Sparkles className="w-3 h-3" />
+            Tune feed
+          </button>
+          <button
+            className="h-8 w-8 rounded-full border border-neutral-800 bg-neutral-900/80 flex items-center justify-center hover:bg-neutral-800 transition"
+            aria-label="Preferences"
+          >
+            <SlidersHorizontal className="w-4 h-4 text-neutral-300" />
+          </button>
+        </div>
       </header>
+      <section className="flex px-4 pb-3pt-3 space-y-4 items-center justify-center  ">
+        <div className="max-w-md">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-neutral-500">
+              Feeds
+            </p>
+            <button
+              type="button"
+              className="text-[11px] text-neutral-400 hover:text-neutral-200 flex items-center gap-1"
+            >
+              <Globe2 className="w-3 h-3" />
+              Manage sources
+            </button>
+          </div>
 
-      {/* Main content */}
-      <main className="flex-1">
-        {/* Hero / Overview */}
-        <section
-          id="overview"
-          className="relative overflow-hidden border-b border-slate-200"
-        >
-          <div className="mx-auto max-w-6xl px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
-            {/* Left */}
-            <div>
-              <div className="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1">
-                <Megaphone className="h-4 w-4" aria-hidden />
-                Student-targeted ads for CampusCribs
-              </div>
-              <h1 className="mt-4 text-4xl md:text-5xl font-extrabold tracking-tight">
-                Promote your listings with{" "}
-                <span className="text-slate-900">smart student campaigns</span>
-              </h1>
-              <p className="mt-4 text-slate-600 text-lg leading-relaxed">
-                ads.campuscribs.org lets you run Google-style campaigns for your
-                student housing listings. Group your ads into campaigns, set
-                your budget, and reach the right students at the right moment.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [::-webkit-scrollbar]:hidden pb-1 -mx-1 px-1">
+            {FEEDS.map((feed) => {
+              const isActive = feed.key === activeFeed;
+              return (
                 <button
-                  onClick={() => navigate("/campaigns/new")}
-                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition shadow-md"
+                  key={feed.key}
+                  type="button"
+                  onClick={() => setActiveFeed(feed.key)}
+                  className={`flex flex-col items-start min-w-[140px] rounded-2xl border px-3 py-2.5 text-left transition ${
+                    isActive
+                      ? "border-sky-500/70 bg-neutral-900 shadow-[0_0_25px_rgba(56,189,248,0.35)]"
+                      : "border-neutral-800 bg-neutral-950 hover:bg-neutral-900/80"
+                  }`}
                 >
-                  Create your first campaign
-                  <ArrowRight className="h-5 w-5" aria-hidden />
-                </button>
-                <button
-                  onClick={() => navigate("/dashboard")}
-                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-slate-900 border border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300 transition"
-                >
-                  View performance
-                </button>
-              </div>
-              <ul className="mt-6 space-y-2 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2
-                    className="mt-0.5 h-5 w-5 text-emerald-600"
-                    aria-hidden
-                  />
-                  Designed for short-term student housing & CampusCribs
-                  listings.
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2
-                    className="mt-0.5 h-5 w-5 text-emerald-600"
-                    aria-hidden
-                  />
-                  Campaigns with one or multiple ads, just like Google Ads.
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2
-                    className="mt-0.5 h-5 w-5 text-emerald-600"
-                    aria-hidden
-                  />
-                  Clear pricing and simple packages that fit student budgets.
-                </li>
-              </ul>
-            </div>
-
-            {/* Right */}
-            <div className="relative">
-              <div className="relative mx-auto max-w-md rounded-3xl border border-slate-200 bg-white shadow-xl p-6">
-                <div className="flex items-center gap-3">
-                  <BarChart3 className="h-6 w-6 text-indigo-600" aria-hidden />
-                  <p className="text-sm font-medium text-slate-700">
-                    Live campaign performance
+                  <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 mb-0.5">
+                    {feed.key === "software" && <Code2 className="w-3 h-3" />}
+                    {feed.key === "react" && <Cpu className="w-3 h-3" />}
+                    {feed.key === "spring" && <BookOpen className="w-3 h-3" />}
+                    {feed.key === "java" && <Layers className="w-3 h-3" />}
+                    {feed.key === "security" && (
+                      <Sparkles className="w-3 h-3" />
+                    )}
+                    <span className={feed.accent}>{feed.label}</span>
+                  </div>
+                  <p className="text-[10px] text-neutral-400 line-clamp-2">
+                    {feed.description}
                   </p>
-                </div>
-                <div className="mt-4 aspect-video rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex flex-col justify-between p-4">
-                  <div className="flex justify-between text-xs text-slate-500">
-                    <span>Impressions</span>
-                    <span>Clicks</span>
-                    <span>CTR</span>
-                  </div>
-                  <div className="flex-1 flex items-center justify-center text-center text-sm text-slate-500">
-                    Analytics chart placeholder — this is where your campaign
-                    graphs will appear.
-                  </div>
-                  <div className="flex justify-between text-xs text-slate-500">
-                    <span>Spend</span>
-                    <span>Conversions</span>
-                  </div>
-                </div>
-                <ul className="mt-5 text-sm text-slate-600 space-y-2">
-                  <li className="flex gap-2">
-                    <CheckCircle2
-                      className="h-5 w-5 text-emerald-600"
-                      aria-hidden
-                    />
-                    View aggregated stats per campaign and per ad.
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle2
-                      className="h-5 w-5 text-emerald-600"
-                      aria-hidden
-                    />
-                    Track clicks to your listings and contact buttons.
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle2
-                      className="h-5 w-5 text-emerald-600"
-                      aria-hidden
-                    />
-                    Optimize creatives like headlines and images over time.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Content explainer */}
-        <section
-          id="content-explainer"
-          className="py-10 border-b border-slate-200 bg-white"
-        >
-          <div className="mx-auto max-w-4xl px-4">
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-              What this page covers
-            </h2>
-            <p className="mt-3 text-slate-600 leading-relaxed text-sm md:text-base">
-              Use this page to explain how ads.campuscribs.org works in your own
-              words. For example, you can briefly describe who this ad platform
-              is for, how campaigns and ads are structured, how billing is
-              handled, and what kind of results advertisers should expect.
-              Replace this paragraph with your own content that outlines the
-              story behind the product, any policies or guidelines, and where to
-              go next to start advertising.
-            </p>
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section
-          id="how-it-works"
-          className="py-12 md:py-16 bg-slate-50 border-b border-slate-200"
-        >
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="flex items-center gap-3">
-              <Target className="h-6 w-6 text-indigo-600" aria-hidden />
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-                How campaigns & ads work
-              </h2>
-            </div>
-            <p className="mt-3 text-slate-600 max-w-3xl">
-              We follow the structure you’re used to from Google Ads: campaigns
-              hold one or more ads, share a budget, and target a specific
-              audience or goal. You control how much you spend and what you
-              promote.
-            </p>
-
-            <div className="mt-8 grid md:grid-cols-4 gap-6">
-              <div className="rounded-2xl border bg-white p-6 shadow-sm">
-                <div className="text-sm font-medium text-slate-500">Step 1</div>
-                <p className="mt-1 text-lg font-semibold">Choose your goal</p>
-                <p className="mt-2 text-slate-600 text-sm">
-                  Pick what you care about most: more listing views, more
-                  messages, or more link clicks to your external site.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border bg-white p-6 shadow-sm">
-                <div className="text-sm font-medium text-slate-500">Step 2</div>
-                <p className="mt-1 text-lg font-semibold">Create a campaign</p>
-                <p className="mt-2 text-slate-600 text-sm">
-                  Name your campaign, set your daily or total budget, choose
-                  dates, and decide which campuses or locations you want to
-                  reach.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border bg-white p-6 shadow-sm">
-                <div className="text-sm font-medium text-slate-500">Step 3</div>
-                <p className="mt-1 text-lg font-semibold">Add your ads</p>
-                <p className="mt-2 text-slate-600 text-sm">
-                  Add one or multiple ads per campaign: images, headlines,
-                  descriptions, and call-to-action buttons promoting your
-                  listings or brand.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border bg-white p-6 shadow-sm">
-                <div className="text-sm font-medium text-slate-500">Step 4</div>
-                <p className="mt-1 text-lg font-semibold">Launch & optimize</p>
-                <p className="mt-2 text-slate-600 text-sm">
-                  Launch your campaign, track results in the dashboard, and
-                  pause, edit, or duplicate campaigns whenever you want.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Campaign structure */}
-        <section
-          id="campaigns"
-          className="py-12 md:py-16 border-b border-slate-200"
-        >
-          <div className="mx-auto max-w-6xl px-4 grid md:grid-cols-2 gap-10 items-start">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-                Campaigns, ads, and placements
-              </h2>
-              <p className="mt-3 text-slate-600">
-                Each campaign groups one or more ads that share the same
-                objective and budget. This makes it easy to test creatives while
-                keeping control over spend.
-              </p>
-              <ul className="mt-5 space-y-3 text-sm text-slate-600">
-                <li className="flex gap-2">
-                  <CheckCircle2
-                    className="mt-0.5 h-5 w-5 text-emerald-600"
-                    aria-hidden
-                  />
-                  Campaign-level budget and dates with ad-level performance
-                  reporting.
-                </li>
-                <li className="flex gap-2">
-                  <CheckCircle2
-                    className="mt-0.5 h-5 w-5 text-emerald-600"
-                    aria-hidden
-                  />
-                  Show ads across CampusCribs placements (listing pages, search
-                  results, and other student-facing surfaces).
-                </li>
-                <li className="flex gap-2">
-                  <CheckCircle2
-                    className="mt-0.5 h-5 w-5 text-emerald-600"
-                    aria-hidden
-                  />
-                  Pause or edit campaigns at any time without long-term
-                  contracts.
-                </li>
-              </ul>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white shadow-sm p-6">
-              <div className="flex items-center gap-3">
-                <Users className="h-6 w-6 text-indigo-600" aria-hidden />
-                <p className="font-semibold text-slate-800">
-                  Example campaign setup
-                </p>
-              </div>
-              <div className="mt-4 text-sm text-slate-600 space-y-2">
-                <p>
-                  <span className="font-semibold">Campaign:</span> Spring
-                  Sublease Leads – UC Campus
-                </p>
-                <p>
-                  <span className="font-semibold">Goal:</span> More messages
-                  &amp; listing views
-                </p>
-                <p>
-                  <span className="font-semibold">Budget:</span> $10/day for 30
-                  days
-                </p>
-                <p>
-                  <span className="font-semibold">Ads:</span>
-                </p>
-                <ul className="list-disc list-inside pl-1 space-y-1">
-                  <li>Ad 1 – Image + headline for your main property.</li>
-                  <li>Ad 2 – “Last-minute co-op subleases” highlight.</li>
-                  <li>Ad 3 – Brand-focused ad for your housing company.</li>
-                </ul>
-                <p className="pt-3 text-xs text-slate-500">
-                  Values shown here are examples only — you&apos;ll configure
-                  the exact goals, budgets, and placements inside your
-                  dashboard.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing */}
-        <section
-          id="pricing"
-          className="py-12 md:py-16 bg-slate-50 border-b border-slate-200"
-        >
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="flex items-center gap-3">
-              <Coins className="h-6 w-6 text-indigo-600" aria-hidden />
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-                Simple pricing & example packages
-              </h2>
-            </div>
-            <p className="mt-3 text-slate-600 max-w-3xl">
-              You control your spend with a flexible budget. Below are example
-              packages you can use as a starting point. Final pricing and
-              billing logic live in your dashboard.
-            </p>
-
-            <div className="mt-8 grid md:grid-cols-3 gap-6">
-              {/* Starter */}
-              <div className="rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
-                <p className="text-sm font-semibold text-slate-500">Starter</p>
-                <p className="mt-2 text-3xl font-bold">$50+</p>
-                <p className="text-xs text-slate-500 mb-2">
-                  suggested monthly budget
-                </p>
-                <p className="text-sm text-slate-600 flex-1">
-                  Ideal for individual landlords or a single property with a few
-                  listings.
-                </p>
-                <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                  <li>Up to 2 active campaigns</li>
-                  <li>Basic performance metrics</li>
-                  <li>Email support</li>
-                </ul>
-              </div>
-
-              {/* Growth */}
-              <div className="rounded-2xl border-2 border-slate-900 bg-white p-6 shadow-md flex flex-col">
-                <p className="text-sm font-semibold text-emerald-600">Growth</p>
-                <p className="mt-2 text-3xl font-bold">$150+</p>
-                <p className="text-xs text-slate-500 mb-2">
-                  suggested monthly budget
-                </p>
-                <p className="text-sm text-slate-600 flex-1">
-                  Best for property managers or student housing brands looking
-                  for consistent visibility.
-                </p>
-                <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                  <li>Up to 5 active campaigns</li>
-                  <li>Enhanced analytics & breakdowns</li>
-                  <li>Basic A/B testing for ads</li>
-                </ul>
-              </div>
-
-              {/* Campus Takeover */}
-              <div className="rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
-                <p className="text-sm font-semibold text-slate-500">
-                  Campus Takeover
-                </p>
-                <p className="mt-2 text-3xl font-bold">$500+</p>
-                <p className="text-xs text-slate-500 mb-2">
-                  suggested monthly budget
-                </p>
-                <p className="text-sm text-slate-600 flex-1">
-                  For large campaigns, multiple properties, or seasonal pushes
-                  around move-in and co-op rotations.
-                </p>
-                <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                  <li>Custom number of campaigns</li>
-                  <li>Deeper reporting & exports</li>
-                  <li>Priority placements & strategy support</li>
-                </ul>
-              </div>
-            </div>
-
-            <p className="mt-4 text-xs text-slate-500">
-              These are example packages to help you frame your pricing. Use
-              your own numbers and logic in production.
-            </p>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section id="faq" className="py-12 md:py-16 border-b border-slate-200">
-          <div className="mx-auto max-w-4xl px-4">
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-              Frequently asked questions
-            </h2>
-            <div className="mt-6 space-y-6 text-sm text-slate-700">
-              <div>
-                <p className="font-semibold">
-                  How do you charge for ads — per click or per view?
-                </p>
-                <p className="mt-1 text-slate-600">
-                  You can explain your billing model here (for example,
-                  cost-per-click, cost-per-impression, or a hybrid). Update this
-                  copy to match your real pricing once your backend is ready.
-                </p>
-              </div>
-              <div>
-                <p className="font-semibold">
-                  Can I pause or edit my campaigns?
-                </p>
-                <p className="mt-1 text-slate-600">
-                  Yes. Campaigns are fully under your control. You can pause,
-                  adjust budgets, update ads, or change targets directly in your
-                  dashboard.
-                </p>
-              </div>
-              <div>
-                <p className="font-semibold">
-                  Do I need a CampusCribs account to advertise?
-                </p>
-                <p className="mt-1 text-slate-600">
-                  Typically yes, since ads are designed to send students to your
-                  CampusCribs listings or profile. Clarify your exact
-                  requirements and signup flow here.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section
-          id="contact"
-          className="py-16 bg-slate-900 text-white border-t border-slate-800"
-        >
-          <div className="mx-auto max-w-6xl px-4 grid md:grid-cols-2 gap-10 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-                Ready to reach more students?
-              </h2>
-              <p className="mt-4 text-slate-300 text-lg">
-                Launch a campaign in a few minutes, experiment with creatives,
-                and drive more views and leads to your CampusCribs listings.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <button
-                  onClick={() => navigate("/campaigns/new")}
-                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 bg-white text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition"
-                >
-                  Start a campaign
-                  <ArrowRight className="h-5 w-5" aria-hidden />
                 </button>
-                <a
-                  href="mailto:ads@campuscribs.org"
-                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 border border-slate-500 text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 transition text-sm"
-                >
-                  Talk to our team
-                </a>
-              </div>
-            </div>
-            <div className="rounded-3xl border border-slate-700 bg-slate-800 p-6 text-sm text-slate-200">
-              <p className="font-semibold">What to include here</p>
-              <ul className="mt-3 space-y-2 list-disc list-inside">
-                <li>Your preferred contact email or form link.</li>
-                <li>
-                  Any requirements for advertisers (e.g., student housing only).
-                </li>
-                <li>
-                  A short note about review/moderation of ad creatives if you do
-                  that.
-                </li>
-              </ul>
-            </div>
+              );
+            })}
           </div>
-        </section>
+        </div>
+      </section>
+
+      {/* Content / chat-style feed */}
+      <main className="flex-1 overflow-y-auto px-4 pb-20 pt-3 space-y-4">
+        <div className="mx-auto max-w-md space-y-4">
+          {MOCK_UPDATES.map((update) => {
+            const reaction = reactions[update.id] ?? null;
+            return (
+              <div key={update.id} className="flex flex-col gap-2">
+                {/* Timestamp separator */}
+                <div className="flex items-center justify-center">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/70 px-3 py-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    <span className="text-[11px] text-neutral-400">
+                      {update.time} • {update.source}
+                    </span>
+                  </div>
+                </div>
+
+                {/* “Message” bubble from AI */}
+                <div className="flex justify-start">
+                  <div className="relative max-w-[90%] rounded-2xl bg-gradient-to-br from-neutral-900 via-neutral-900/95 to-neutral-900/80 border border-neutral-800 px-4 py-3 shadow-[0_0_40px_rgba(15,23,42,0.8)]">
+                    <p className="text-[11px] uppercase tracking-wide text-sky-400 mb-1">
+                      {update.tag}
+                    </p>
+                    <h2 className="text-sm font-semibold text-neutral-50 mb-1.5">
+                      {update.headline}
+                    </h2>
+                    <p className="text-xs text-neutral-300 leading-relaxed">
+                      {update.summary}
+                    </p>
+                    <p className="mt-2 text-[11px] text-neutral-500">
+                      Tap a reaction so I can learn what matters to you.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Reactions row */}
+                <div className="flex justify-start">
+                  <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                    <button
+                      onClick={() => handleReaction(update.id, "like")}
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 border text-xs transition ${
+                        reaction === "like"
+                          ? "border-rose-500/80 bg-rose-500/10 text-rose-300"
+                          : "border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:bg-neutral-800"
+                      }`}
+                    >
+                      <Heart
+                        className={`w-3.5 h-3.5 ${
+                          reaction === "like" ? "fill-current" : ""
+                        }`}
+                      />
+                      <span>Love this</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleReaction(update.id, "dislike")}
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 border text-xs transition ${
+                        reaction === "dislike"
+                          ? "border-amber-500/80 bg-amber-500/10 text-amber-200"
+                          : "border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:bg-neutral-800"
+                      }`}
+                    >
+                      <ThumbsDown className="w-3.5 h-3.5" />
+                      <span>Not into it</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleReaction(update.id, "hide")}
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 border text-xs transition ${
+                        reaction === "hide"
+                          ? "border-red-500/80 bg-red-500/10 text-red-200"
+                          : "border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:bg-neutral-800"
+                      }`}
+                    >
+                      <EyeOff className="w-3.5 h-3.5" />
+                      <span>Don&apos;t show this</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleReaction(update.id, "more")}
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 border text-xs transition ${
+                        reaction === "more"
+                          ? "border-emerald-500/80 bg-emerald-500/10 text-emerald-200"
+                          : "border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:bg-neutral-800"
+                      }`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>More like this</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleReaction(update.id, "less")}
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 border text-xs transition ${
+                        reaction === "less"
+                          ? "border-sky-500/80 bg-sky-500/10 text-sky-200"
+                          : "border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:bg-neutral-800"
+                      }`}
+                    >
+                      <SlidersHorizontal className="w-3.5 h-3.5" />
+                      <span>Less of this</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Feedback label */}
+                {reaction && (
+                  <p className="pl-1 text-[11px] text-neutral-500">
+                    {reactionLabel[reaction as Exclude<ReactionType, null>]}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-10 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <p>
-            © {new Date().getFullYear()} ads.campuscribs.org. All rights
-            reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            <a href="/ads-privacy-policy.pdf" className="hover:text-slate-900">
-              Privacy
-            </a>
-            <a
-              href="/ads-terms-and-conditions.pdf"
-              className="hover:text-slate-900"
-            >
-              Terms
-            </a>
-            <a
-              href="mailto:ads@campuscribs.org"
-              className="hover:text-slate-900"
-            >
-              Contact
-            </a>
-          </div>
+      {/* Bottom bar / tab bar */}
+      <footer className="fixed bottom-0 left-0 right-0 z-20 border-t border-neutral-800 bg-neutral-950/95 backdrop-blur">
+        <div className="mx-auto flex max-w-md items-center justify-between px-8 py-2.5 text-[11px]">
+          <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition">
+            <Home className="w-5 h-5" />
+            <span>Home</span>
+          </button>
+
+          <button className="flex flex-col items-center gap-0.5 text-neutral-100">
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-full bg-sky-500/20 blur-md" />
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sky-500 text-neutral-950 shadow-lg shadow-sky-500/40">
+                <Sparkles className="w-5 h-5" />
+              </div>
+            </div>
+            <span className="mt-1 font-medium">AI Feed</span>
+          </button>
+
+          <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition">
+            <Bell className="w-5 h-5" />
+            <span>Alerts</span>
+          </button>
+
+          <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition">
+            <User className="w-5 h-5" />
+            <span>You</span>
+          </button>
         </div>
       </footer>
     </div>
   );
 };
 
-export default Home;
+export default News;
