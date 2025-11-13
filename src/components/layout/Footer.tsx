@@ -1,128 +1,42 @@
-import {
-  CircleUserRound,
-  Ghost,
-  Info,
-  LogIn,
-  LogOut,
-  Menu,
-  Settings,
-} from "lucide-react";
-import { AnimatePresence } from "motion/react";
-import { useState } from "react";
-import * as motion from "motion/react-client";
+import { Bell, Home, Sparkles, User } from "lucide-react";
+
 import { useNavigate } from "react-router";
-import HatHouse from "../ui/HouseHat";
-import useEasyAuth from "@/hooks/use-easy-auth";
-import useLogin from "@/hooks/use-login";
-import useLogout from "@/hooks/use-logout";
 
 const Footer = () => {
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { user } = useEasyAuth();
-  const { login } = useLogin();
-  const { logout } = useLogout();
   return (
-    <>
-      {open && (
-        <div
-          className="fixed inset-0 bg-black opacity-30 z-50"
-          onClick={() => setOpen(false)}
-        ></div>
-      )}
-      <div className="relative w-10 z-50 ">
-        {/* Menu Button - Always Visible */}
-        <div
-          className="bg-black rounded-full w-20 shadow-2xl h-20 flex items-center justify-center  mb-5 ml-5"
-          onClick={() => setOpen(!open)}
+    <footer className="fixed bottom-0 left-0 right-0 z-20 border-t border-neutral-800 bg-neutral-950/95 backdrop-blur">
+      <div className="mx-auto flex max-w-md items-center justify-between px-8 py-2.5 text-[11px]">
+        <button
+          className="flex flex-col items-center gap-0.5 text-neutral-100"
+          onClick={() => navigate("/ai")}
         >
-          <Menu color="white" size={40} />
-        </div>
+          <div className="relative">
+            <div className="absolute -inset-2 rounded-full bg-sky-500/20 blur-md" />
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sky-500 text-neutral-950 shadow-lg shadow-sky-500/40">
+              <Sparkles className="w-5 h-5" />
+            </div>
+          </div>
+          <span className="mt-1 font-medium">AI Feed</span>
+        </button>
 
-        {/* Overlay & Animated Menu */}
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0, x: -50, y: 50 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                x: 20,
-                y: 0,
-                transition: { duration: 0.1 },
-              }}
-              exit={{ opacity: 0, scale: 0, x: -30, y: 80 }}
-              key="box"
-              className="absolute bottom-0 left-0 bg-black p-5 rounded-xl rounded-bl-none flex items-center text-white justify-center text-left flex-col shadow-lg z-50"
-              onClick={() => setOpen(false)}
-            >
-              <div>
-                <div
-                  className="flex flex-row mx-4 my-4  text-left "
-                  onClick={() => navigate("/")}
-                >
-                  <div className="mr-2 cursor-pointer">
-                    <HatHouse />
-                  </div>
-                  <div className="cursor-pointer">Cribs</div>
-                </div>
-                <div
-                  className="flex flex-row mx-4 my-4  text-left "
-                  onClick={() => navigate("/profile")}
-                >
-                  <div className="mr-2 cursor-pointer">
-                    <CircleUserRound />
-                  </div>
-                  <div className="cursor-pointer">Profile</div>
-                </div>
-                {user?.access_token && (
-                  <div
-                    className="flex flex-row mx-4 my-4  text-left "
-                    onClick={() => navigate("/settings")}
-                  >
-                    <div className="mr-2 cursor-pointer">
-                      <Settings />
-                    </div>
-                    <div className="cursor-pointer">Settings</div>
-                  </div>
-                )}
-                <div
-                  className="flex flex-row mx-4 my-4  text-left "
-                  onClick={() => navigate("/support")}
-                >
-                  <div className="mr-2 cursor-pointer">
-                    <Info />
-                  </div>
-                  <div className="cursor-pointer">Support</div>
-                </div>
-                {user?.access_token ? null : (
-                  <div
-                    className="flex flex-row mx-4 my-4  text-left "
-                    onClick={login}
-                  >
-                    <div className="mr-2 cursor-pointer">
-                      <LogIn />
-                    </div>
-                    <div className="cursor-pointer">Login</div>
-                  </div>
-                )}
-                {user?.access_token ? (
-                  <div
-                    className="flex flex-row mx-4 my-4  text-left "
-                    onClick={logout}
-                  >
-                    <div className="mr-2 cursor-pointer">
-                      <LogOut />
-                    </div>
-                    <div className="cursor-pointer">Logout</div>
-                  </div>
-                ) : null}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <button
+          className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition"
+          onClick={() => navigate("/alert")}
+        >
+          <Bell className="w-5 h-5" />
+          <span>Alerts</span>
+        </button>
+
+        <button
+          className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition"
+          onClick={() => navigate("/you")}
+        >
+          <User className="w-5 h-5" />
+          <span>You</span>
+        </button>
       </div>
-    </>
+    </footer>
   );
 };
 

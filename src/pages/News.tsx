@@ -15,6 +15,8 @@ import {
   Code2,
   Globe2,
 } from "lucide-react";
+import { useNavigate } from "react-router";
+import { nav } from "motion/react-client";
 
 type ReactionType = "like" | "dislike" | "hide" | "more" | "less" | null;
 
@@ -107,6 +109,7 @@ const reactionLabel: Record<Exclude<ReactionType, null>, string> = {
 
 const News: React.FC = () => {
   const [reactions, setReactions] = useState<Record<number, ReactionType>>({});
+  const navigate = useNavigate();
 
   const handleReaction = (id: number, reaction: ReactionType) => {
     setReactions((prev) => ({
@@ -119,38 +122,6 @@ const News: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-50">
       {/* Top bar / header */}
-      <header className="sticky top-0 z-20 h-14 flex items-center justify-between px-4 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-sky-500 via-indigo-500 to-violet-500 flex items-center justify-center text-xs font-semibold">
-            AI
-          </div>
-          <div>
-            <div className="text-sm font-semibold flex items-center gap-1">
-              AI News Feed
-              <Dot className="w-4 h-4 text-emerald-400" />
-              <span className="text-[11px] font-normal text-emerald-400">
-                Online
-              </span>
-            </div>
-            <p className="text-[11px] text-neutral-400">
-              Smart updates throughout your day
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-1 rounded-full border border-neutral-800 bg-neutral-900/80 px-3 py-1 text-[11px] text-neutral-300 hover:bg-neutral-800 transition">
-            <Sparkles className="w-3 h-3" />
-            Tune feed
-          </button>
-          <button
-            className="h-8 w-8 rounded-full border border-neutral-800 bg-neutral-900/80 flex items-center justify-center hover:bg-neutral-800 transition"
-            aria-label="Preferences"
-          >
-            <SlidersHorizontal className="w-4 h-4 text-neutral-300" />
-          </button>
-        </div>
-      </header>
       <section className="flex px-4 pb-3pt-3 space-y-4 items-center justify-center  ">
         <div className="max-w-md">
           <div className="flex items-center justify-between">
@@ -315,36 +286,6 @@ const News: React.FC = () => {
           })}
         </div>
       </main>
-
-      {/* Bottom bar / tab bar */}
-      <footer className="fixed bottom-0 left-0 right-0 z-20 border-t border-neutral-800 bg-neutral-950/95 backdrop-blur">
-        <div className="mx-auto flex max-w-md items-center justify-between px-8 py-2.5 text-[11px]">
-          <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition">
-            <Home className="w-5 h-5" />
-            <span>Home</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-0.5 text-neutral-100">
-            <div className="relative">
-              <div className="absolute -inset-2 rounded-full bg-sky-500/20 blur-md" />
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sky-500 text-neutral-950 shadow-lg shadow-sky-500/40">
-                <Sparkles className="w-5 h-5" />
-              </div>
-            </div>
-            <span className="mt-1 font-medium">AI Feed</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition">
-            <Bell className="w-5 h-5" />
-            <span>Alerts</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-0.5 text-neutral-400 hover:text-neutral-100 transition">
-            <User className="w-5 h-5" />
-            <span>You</span>
-          </button>
-        </div>
-      </footer>
     </div>
   );
 };
